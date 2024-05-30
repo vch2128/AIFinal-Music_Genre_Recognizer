@@ -30,14 +30,11 @@ class MusicData:
 
 
     def __init__(self):
-        self.hop_length = 512   # length of non-overlapping portion of window length
-
+        self.hop_length = 1024   # length of non-overlapping portion of window length
         self.train_pathlist = self.music_path_list(self.dir_trainfolder)
+        
+        self.timeseries_length = 600   # length of samples
 
-        self.all_files_list = []
-        self.all_files_list.extend(self.train_pathlist)
-
-        self.timeseries_length = ( 128 )    # length of samples
         # self.get_sample_len()
         
 
@@ -51,13 +48,6 @@ class MusicData:
                 path_list.append(path)
         return path_list
 
-    def get_sample_len(self):
-        sr = 22050
-        timestep = self.hop_length/sr
-        # print('timestep:',timestep)
-        samplelen = timestep*self.timeseries_length
-        print("length of sample:", samplelen, "sec")
-
     def extract_feature(self, path_list):
         data = np.zeros( (len(path_list), self.timeseries_length, 33), dtype=np.float64 )
         genre_list = []
@@ -69,7 +59,7 @@ class MusicData:
             # compute features
             mfcc = librosa.feature.mfcc( y=y, sr=sr, hop_length=self.hop_length, n_mfcc=13 )
             spectral_center = librosa.feature.spectral_centroid( y=y, sr=sr, hop_length=self.hop_length )
-            chroma = librosa.feature.chroma_stft(y=y, sr=sr, hop_length=self.hop_length)
+            chroma = librosa.feature.chroma_stft(y=y, sr=sr, hop_length=self.hop_length )
             spectral_contrast = librosa.feature.spectral_contrast( y=y, sr=sr, hop_length=self.hop_length )
 
             data[i, :, 0:13] = mfcc.T[0:self.timeseries_length, :]
@@ -83,6 +73,11 @@ class MusicData:
 
             progress.update(1)
         progress.close()
+
+        # print("mfcc",mfcc.shape)
+        # print("spec_cen",spectral_center.shape)
+        # print("chroma",chroma.shape)
+        # print("spec_con",spectral_contrast.shape)
 
         genre_list = self.one_hot_encoding( np.expand_dims(np.asarray(genre_list), axis=1) )
         return data, genre_list
@@ -107,3 +102,4 @@ class MusicData:
         print("Loading feature data files...")
         self.train_X = np.load(self.train_X_file)
         self.train_Y = np.load(self.train_Y_file)
+
