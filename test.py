@@ -37,7 +37,6 @@ def extract_feature(self, song):
 
 def predict(model, song):
     prediction = model.predict(extract_feature(song))
-    # 獲取預測的類型索引，並從類型列表中找到對應的類型名稱
     predict_genre = MusicData().genre_list[np.argmax(prediction)]
     return predict_genre
 
@@ -46,7 +45,6 @@ if __name__ == "__main__":
     print("Please input the folder you want to organize: ")
     input_song = input().strip()
 
-    # 構建目標資料夾路徑
     for genre_name in MusicData.genre_list:
         music_folder = os.path.join(input_song, genre_name)
         if not os.path.exists(music_folder):
