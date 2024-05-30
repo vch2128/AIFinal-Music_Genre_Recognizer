@@ -104,4 +104,6 @@ class MusicData:
         with open(self.train_Y_file, "wb") as f:
             np.save(f, self.train_Y)
 
-    #def load_feature_data(self):
+    def load_feature_data(self):
+        self.train_X = np.load(self.train_X_file)
+        self.train_Y = np.load(self.train_Y_file)

@@ -6,7 +6,7 @@ import os
 from DataProcessing import MusicData
 
 music_data = MusicData()
-music_data.load_feature_data()
+music_data.create_feature_data()
 
 # class LSTM(nn.Module):
 #     def __init__(self, input_feature_dim, hidden_feature_dim, hidden_layer_num, batch_size, classes_num):
