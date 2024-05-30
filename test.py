@@ -4,53 +4,54 @@ import sys
 import numpy as np
 import os
 import shutil
-
-from keras.models import model_from_json
+import torch
+from torch import nn
 from DataProcessing import MusicData
 
 
 logging.getLogger("tensorflow").setLevel(logging.ERROR)
 timeseries_length = 128
+model_path = "決定model存的地方後幫我改一下QQ"
 
-def load_model(model_path, weight_path):
-    with open(model_path, "r") as model_file:
-        trained_model = model_from_json(model_file.read())
+def load_model(path):
+    model = LSTM(input_dim=33, hidden_dim=128, batch_size=1, output_dim=12, num_layers=2)
+    model.load_state_dict(torch.load(path))
+    model.eval()
+    return model
 
-    trained_model.load_weights(weight_path)
-    trained_model.compile(loss = "categorical_crossentropy", optimizer = "adam", metrics = ["accuracy"])
-
-    return trained_model
-
-def extract_feature(self, song):
+def extract_feature(song):
     data = np.zeros((1, timeseries_length, 33), dtype=np.float64)
     y, sr = librosa.load(song)
-    mfcc = librosa.feature.mfcc( y=y, sr=sr, hop_length=self.hop_length, n_mfcc=13 )
-    spectral_center = librosa.feature.spectral_centroid( y=y, sr=sr, hop_length=self.hop_length )
-    chroma = librosa.feature.chroma_stft(y=y, sr=sr, hop_length=self.hop_length)
-    spectral_contrast = librosa.feature.spectral_contrast( y=y, sr=sr, hop_length=self.hop_length )
+    hop_length = 512
+    mfcc = librosa.feature.mfcc(y=y, sr=sr, hop_length=hop_length, n_mfcc=13)
+    spectral_center = librosa.feature.spectral_centroid(y=y, sr=sr, hop_length=hop_length)
+    chroma = librosa.feature.chroma_stft(y=y, sr=sr, hop_length=hop_length)
+    spectral_contrast = librosa.feature.spectral_contrast(y=y, sr=sr, hop_length=hop_length)
 
-    data[0, :, 0:13] = mfcc.T[0:self.timeseries_length, :]
-    data[0, :, 13:14] = spectral_center.T[0:self.timeseries_length, :]
-    data[0, :, 14:26] = chroma.T[0:self.timeseries_length, :]
-    data[0, :, 26:33] = spectral_contrast.T[0:self.timeseries_length, :]
+    data[0, :, 0:13] = mfcc.T[0:timeseries_length, :]
+    data[0, :, 13:14] = spectral_center.T[0:timeseries_length, :]
+    data[0, :, 14:26] = chroma.T[0:timeseries_length, :]
+    data[0, :, 26:33] = spectral_contrast.T[0:timeseries_length, :]
     return data
 
 def predict(model, song):
-    prediction = model.predict(extract_feature(song))
-    predict_genre = MusicData().genre_list[np.argmax(prediction)]
+    features = extract_feature(song)
+    features_tensor = torch.tensor(features, dtype=torch.float32).permute(1, 0, 2)
+    prediction, hidden = model(features_tensor)
+    predict_genre = MusicData().genre_list[torch.argmax(prediction)]  # max: model最認可的
     return predict_genre
 
 if __name__ == "__main__":
-    model = load_model("./weights/model.json", "./weights/model_weights.h5")
+    model = load_model(model_path)
     print("Please input the folder you want to organize: ")
     input_song = input().strip()
 
-    for genre_name in MusicData.genre_list:
+    for genre_name in MusicData().genre_list:
         music_folder = os.path.join(input_song, genre_name)
         if not os.path.exists(music_folder):
             os.makedirs(music_folder)
 
-    genre_dict = {genre_name: [] for genre_name in MusicData.genre_list}
+    genre_dict = {genre_name: [] for genre_name in MusicData().genre_list}
     
     for song in os.listdir(input_song):
         if song.endswith('.mp3'):
