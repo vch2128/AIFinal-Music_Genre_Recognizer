@@ -16,7 +16,6 @@ class MusicData:
         "jazz",
         "rock",
         "blues",
-        "funk",
         "reggae",
         "EDM",
         "Jpop",
@@ -105,5 +104,6 @@ class MusicData:
             np.save(f, self.train_Y)
 
     def load_feature_data(self):
+        print("Loading feature data files...")
         self.train_X = np.load(self.train_X_file)
         self.train_Y = np.load(self.train_Y_file)
