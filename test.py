@@ -15,7 +15,7 @@ timeseries_length = 128
 
 
 def load_model():
-    model = LSTM(input_dim=33, hidden_dim=128, batch_size=1, output_dim=12, num_layers=2)
+    model = LSTM(input_dim=33, hidden_dim=128, batch_size=25, output_dim=12, layer_num=2)
 
     if os.path.exists(model.model_path):
         print("Model available. Loading model...")
@@ -51,25 +51,25 @@ def predict(model, song):
 
 if __name__ == "__main__":
     model = load_model()
-    print("Please input the folder you want to organize: ")
-    input_song = input().strip()
+    # print("Please input the folder you want to organize: ")
+    # input_song = input().strip()
 
-    for genre_name in MusicData().genre_list:
-        music_folder = os.path.join(input_song, genre_name)
-        if not os.path.exists(music_folder):
-            os.makedirs(music_folder)
+    # for genre_name in MusicData().genre_list:
+    #     music_folder = os.path.join(input_song, genre_name)
+    #     if not os.path.exists(music_folder):
+    #         os.makedirs(music_folder)
 
-    genre_dict = {genre_name: [] for genre_name in MusicData().genre_list}
+    # genre_dict = {genre_name: [] for genre_name in MusicData().genre_list}
     
-    for song in os.listdir(input_song):
-        if song.endswith('.mp3'):
-            song_path = os.path.join(input_song, song)
-            prediction = predict(model, song_path)
-            target_folder = os.path.join(input_song, prediction)
-            shutil.move(song_path, target_folder)
-            genre_dict[prediction].append(song[:-4])  # 去掉.mp3
+    # for song in os.listdir(input_song):
+    #     if song.endswith('.mp3'):
+    #         song_path = os.path.join(input_song, song)
+    #         prediction = predict(model, song_path)
+    #         target_folder = os.path.join(input_song, prediction)
+    #         shutil.move(song_path, target_folder)
+    #         genre_dict[prediction].append(song[:-4])  # 去掉.mp3
 
-    for genre, tracks in genre_dict.items():
-        print(f"\n{genre}: ")
-        for track in tracks:
-            print(track)
+    # for genre, tracks in genre_dict.items():
+    #     print(f"\n{genre}: ")
+    #     for track in tracks:
+    #         print(track)
