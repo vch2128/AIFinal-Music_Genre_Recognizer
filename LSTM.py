@@ -163,6 +163,7 @@ def main():
     plt.xlabel("# of epochs")
     plt.ylabel("Loss")
     plt.title("Comparison of Loss")
+    plt.legend()
     plt.show()
 
     plt.plot(epoch_train, acc_train, label='Training')
@@ -170,6 +171,7 @@ def main():
     plt.xlabel("# of epochs")
     plt.ylabel("Accuracy(%)")
     plt.title("Comparison of Accuracy")
+    plt.legend()
     plt.show()
 
 
