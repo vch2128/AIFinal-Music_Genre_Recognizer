@@ -24,17 +24,21 @@ class MusicData:
     ]
 
     dir_trainfolder = "./Data/train"
+    dir_devfolder = "./Data/dev"
 
     train_X_file = "./Data/train_X.npy"
     train_Y_file = "./Data/train_Y.npy"
+    dev_X_file = "./Data/dev_X.npy"
+    dev_Y_file = "./Data/dev_Y.npy"
 
 
     def __init__(self):
         self.hop_length = 512   # length of non-overlapping portion of window length
-        self.train_pathlist = self.music_path_list(self.dir_trainfolder)
-        
         self.timeseries_length = 1200   # length of samples
 
+        self.train_pathlist = self.music_path_list(self.dir_trainfolder)
+        self.dev_pathlist = self.music_path_list(self.dir_devfolder)
+        
         # self.get_sample_len()
         
 
@@ -53,7 +57,6 @@ class MusicData:
         partition_len = int(self.timeseries_length / partition_num)
         data = np.zeros( (len(path_list)*partition_num, partition_len, 33), dtype=np.float64 )
         genre_list = []
-        print("Extracting features...")
         progress = tqdm(total = len(path_list))
 
         for i, file in enumerate(path_list):
@@ -96,15 +99,25 @@ class MusicData:
 
     def create_feature_data(self):
         print("Creating feature data files...")
-        # training
+        # train
+        print("Extracting training data features...")
         self.train_X, self.train_Y = self.extract_feature(self.train_pathlist)
         with open(self.train_X_file, "wb") as f:
             np.save(f, self.train_X)
         with open(self.train_Y_file, "wb") as f:
             np.save(f, self.train_Y)
+        # dev
+        print("Extracting validation data features...")
+        self.dev_X, self.dev_Y = self.extract_feature(self.dev_pathlist)
+        with open(self.dev_X_file, "wb") as f:
+            np.save(f, self.dev_X)
+        with open(self.dev_Y_file, "wb") as f:
+            np.save(f, self.dev_Y)
 
     def load_feature_data(self):
         print("Loading feature data files...")
         self.train_X = np.load(self.train_X_file)
         self.train_Y = np.load(self.train_Y_file)
+        self.dev_X = np.load(self.dev_X_file)
+        self.dev_Y = np.load(self.dev_Y_file)
 
