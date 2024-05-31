@@ -65,11 +65,16 @@ def main():
     output_dim = 12    # 12 genres
     epochs = 50
     learning_rate = 0.001
+    val_gap = 10   # do validation after how many epochs
 
     print("Starting LSTM model...")
     model = LSTM(input_dim, hidden_dim, layer_num, batch_size, output_dim)
     lossfunc = nn.CrossEntropyLoss()
     optimizer = optim.Adam(model.parameters(), lr=learning_rate)
+
+    loss_train, acc_train, loss_dev, acc_dev = [],[],[],[]
+    epoch_train = [i for i in range(1, epochs+1)]
+    epoch_dev = [i for i in range(9, epochs+1, val_gap)]
 
     print("Training...")
     num_batch = int(len(train_X) / batch_size)
@@ -97,10 +102,12 @@ def main():
 
         loss_avg = runningloss / num_batch
         accuracy_avg = accuracy_sum / num_batch
+        loss_train.append(loss_avg)
+        acc_train.append(accuracy_avg)
         print( "Epoch %d:  Loss: %.4f / Accuracy: %.2f%%" % (epoch, loss_avg, accuracy_avg) )
         
         # validation
-        if (epoch+1) % 10 == 0:
+        if (epoch+1) % val_gap == 0:
             model.eval()
             val_runningloss = 0.0
             val_accuracy_sum = 0.0
@@ -119,10 +126,51 @@ def main():
             model.train()
             loss_avg = val_runningloss / val_num_batch
             accuracy_avg = val_accuracy_sum / val_num_batch
+            loss_dev.append(loss_avg)
+            acc_dev.append(accuracy_avg)
             print("\nValidation: Loss: %.4f / Accuracy: %.2f%%\n" % (loss_avg, accuracy_avg))
 
+    # plot the loss and accuracy on both datasets
+    # # train
+    # plt.plot(epoch_train, loss_train)
+    # plt.xlabel("# of epochs")
+    # plt.ylabel("Loss")
+    # plt.title("Loss of Training Data")
+    # plt.show()
 
+    # plt.plot(epoch_train, acc_train)
+    # plt.xlabel("# of epochs")
+    # plt.ylabel("Accuracy(%)")
+    # plt.title("Accuracy of Training Data")
+    # plt.show()
 
+    # # dev
+    # plt.plot(epoch_dev, loss_dev)
+    # plt.xlabel("# of epochs")
+    # plt.ylabel("Loss")
+    # plt.title("Loss of Validation Data")
+    # plt.show()
+
+    # plt.plot(epoch_dev, acc_dev)
+    # plt.xlabel("# of epochs")
+    # plt.ylabel("Accuracy(%)")
+    # plt.title("Accuracy of Validation Data")
+    # plt.show()
+
+    # compare
+    plt.plot(epoch_train, loss_train, label='Training')
+    plt.plot(epoch_dev, loss_dev, label = 'Validation')
+    plt.xlabel("# of epochs")
+    plt.ylabel("Loss")
+    plt.title("Comparison of Loss")
+    plt.show()
+
+    plt.plot(epoch_train, acc_train, label='Training')
+    plt.plot(epoch_dev, acc_dev, label = 'Validation')
+    plt.xlabel("# of epochs")
+    plt.ylabel("Accuracy(%)")
+    plt.title("Comparison of Accuracy")
+    plt.show()
 
 
 
