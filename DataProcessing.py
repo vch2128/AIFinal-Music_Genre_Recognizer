@@ -30,10 +30,10 @@ class MusicData:
 
 
     def __init__(self):
-        self.hop_length = 1024   # length of non-overlapping portion of window length
+        self.hop_length = 512   # length of non-overlapping portion of window length
         self.train_pathlist = self.music_path_list(self.dir_trainfolder)
         
-        self.timeseries_length = 600   # length of samples
+        self.timeseries_length = 1200   # length of samples
 
         # self.get_sample_len()
         
@@ -49,7 +49,9 @@ class MusicData:
         return path_list
 
     def extract_feature(self, path_list):
-        data = np.zeros( (len(path_list), self.timeseries_length, 33), dtype=np.float64 )
+        partition_num = 10
+        partition_len = int(self.timeseries_length / partition_num)
+        data = np.zeros( (len(path_list)*partition_num, partition_len, 33), dtype=np.float64 )
         genre_list = []
         print("Extracting features...")
         progress = tqdm(total = len(path_list))
@@ -62,14 +64,17 @@ class MusicData:
             chroma = librosa.feature.chroma_stft(y=y, sr=sr, hop_length=self.hop_length )
             spectral_contrast = librosa.feature.spectral_contrast( y=y, sr=sr, hop_length=self.hop_length )
 
-            data[i, :, 0:13] = mfcc.T[0:self.timeseries_length, :]
-            data[i, :, 13:14] = spectral_center.T[0:self.timeseries_length, :]
-            data[i, :, 14:26] = chroma.T[0:self.timeseries_length, :]
-            data[i, :, 26:33] = spectral_contrast.T[0:self.timeseries_length, :]
+            # partition data sample into 10 parts
+            for k in range(partition_num):
+                data[partition_num*i+k, 0:partition_len, 0:13] = mfcc.T[ k*partition_len:(k+1)*partition_len, :]
+                data[partition_num*i+k, 0:partition_len, 13:14] = spectral_center.T[ k*partition_len:(k+1)*partition_len, :]
+                data[partition_num*i+k, 0:partition_len, 14:26] = chroma.T[ k*partition_len:(k+1)*partition_len, :]
+                data[partition_num*i+k, 0:partition_len, 26:33] = spectral_contrast.T[ k*partition_len:(k+1)*partition_len, :]
 
             # get true genre of the data sample
             split = re.split("[./]", file)
-            genre_list.append(split[4])
+            for k in range(partition_num):
+                genre_list.append(split[4])
 
             progress.update(1)
         progress.close()
