@@ -3,7 +3,7 @@ from torch import nn
 from torch.autograd import Variable as V
 import torch.optim as optim
 import os
-from tqdm import tqdm
+import matplotlib.pyplot as plt
 from DataProcessing import MusicData
 
 
@@ -26,21 +26,23 @@ class LSTM(nn.Module):
         out = self.fc(out)
         return out
 
-def accuracy(outputs, Y):
-    correct = 0
+
+def accuracy(outputs, Y, batch_size):
     _, predicted = torch.max(outputs, 1)
     _, trueclass = torch.max(Y, 1)
-    print("pre ",predicted)
-    print( (predicted == trueclass).sum() )
-    #correct += ( predicted).sum()
-    #print("cor ",correct)
-    
+    # print("pre ", predicted)
+    # print("true ", trueclass)
+    correct_num = (predicted == trueclass).sum().item()
+    return (correct_num / batch_size) * 100
+
 
 def main():
     music_data = MusicData()
 
     file_exist = ( os.path.exists(music_data.train_X_file) and
-                   os.path.exists(music_data.train_Y_file) )
+                   os.path.exists(music_data.train_Y_file) and
+                   os.path.exists(music_data.dev_X_file) and
+                   os.path.exists(music_data.dev_Y_file)       )
 
     if file_exist:
         music_data.load_feature_data()
@@ -53,13 +55,15 @@ def main():
 
     train_X = torch.from_numpy(music_data.train_X).type(torch.Tensor)
     train_Y = torch.from_numpy(music_data.train_Y).type(torch.Tensor)
+    dev_X = torch.from_numpy(music_data.dev_X).type(torch.Tensor)
+    dev_Y = torch.from_numpy(music_data.dev_Y).type(torch.Tensor)
 
     batch_size = 25
     input_dim = 33     # the calculated features
     hidden_dim = 128     # capture hidden features
     layer_num = 2
     output_dim = 12    # 12 genres
-    epochs = 1
+    epochs = 50
     learning_rate = 0.001
 
     print("Starting LSTM model...")
@@ -69,31 +73,55 @@ def main():
 
     print("Training...")
     num_batch = int(len(train_X) / batch_size)
+    val_num_batch = int(len(dev_X) / batch_size)
+    model.train()
     for epoch in range(epochs):
-        model.train()
         runningloss = 0.0
-        correct = 0
+        accuracy_sum = 0.0
 
         for i in range(num_batch):
             model.zero_grad()
             batch_X = train_X[ i*batch_size : (i+1)*batch_size , : , : ]
             batch_Y = train_Y[ i*batch_size : (i+1)*batch_size , : ]
+
             # Forward pass
             outputs = model(batch_X)
-            # print(outputs)
             loss = lossfunc(outputs, batch_Y)
+
             # Backward and optimize
-            optimizer.zero_grad()
             loss.backward()
             optimizer.step()
 
             runningloss += loss.item()
-            accuracy(outputs, batch_Y)
+            accuracy_sum += accuracy(outputs, batch_Y, batch_size)
 
-        loss_avg = runningloss / batch_size
+        loss_avg = runningloss / num_batch
+        accuracy_avg = accuracy_sum / num_batch
+        print( "Epoch %d:  Loss: %.4f / Accuracy: %.2f%%" % (epoch, loss_avg, accuracy_avg) )
         
-        print( "Epoch: %d / Loss: %.4f" % (epoch, loss_avg) )
-        
+        # validation
+        if (epoch+1) % 10 == 0:
+            model.eval()
+            val_runningloss = 0.0
+            val_accuracy_sum = 0.0
+
+            with torch.no_grad():
+                for i in range(val_num_batch):
+                    batch_X = dev_X[ i*batch_size : (i+1)*batch_size , : , : ]
+                    batch_Y = dev_Y[ i*batch_size : (i+1)*batch_size , : ]
+
+                    outputs = model(batch_X)
+                    loss = lossfunc(outputs, batch_Y)
+
+                    val_runningloss += loss.item()
+                    val_accuracy_sum += accuracy(outputs, batch_Y, batch_size)
+
+            model.train()
+            loss_avg = val_runningloss / val_num_batch
+            accuracy_avg = val_accuracy_sum / val_num_batch
+            print("\nValidation: Loss: %.4f / Accuracy: %.2f%%\n" % (loss_avg, accuracy_avg))
+
+
 
 
 
