@@ -7,17 +7,25 @@ import shutil
 import torch
 from torch import nn
 from DataProcessing import MusicData
+from LSTM import LSTM
 
 
 logging.getLogger("tensorflow").setLevel(logging.ERROR)
 timeseries_length = 128
-model_path = "決定model存的地方後幫我改一下QQ"
 
-def load_model(path):
+
+def load_model():
     model = LSTM(input_dim=33, hidden_dim=128, batch_size=1, output_dim=12, num_layers=2)
-    model.load_state_dict(torch.load(path))
+
+    if os.path.exists(model.model_path):
+        print("Model available. Loading model...")
+        model.load_state_dict(torch.load(model.model_path))
+    else:
+        print("No model found.")
+    
     model.eval()
     return model
+
 
 def extract_feature(song):
     data = np.zeros((1, timeseries_length, 33), dtype=np.float64)
@@ -42,7 +50,7 @@ def predict(model, song):
     return predict_genre
 
 if __name__ == "__main__":
-    model = load_model(model_path)
+    model = load_model()
     print("Please input the folder you want to organize: ")
     input_song = input().strip()
 

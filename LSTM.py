@@ -8,6 +8,8 @@ from DataProcessing import MusicData
 
 
 class LSTM(nn.Module):
+    model_path = "./model/lstm_model.pth"
+
     def __init__(self, input_dim, hidden_dim, layer_num, batch_size, output_dim):
         super(LSTM, self).__init__()
         self.input_dim = input_dim
@@ -174,6 +176,8 @@ def main():
     plt.legend()
     plt.show()
 
+    # save the model state
+    torch.save(model.state_dict(), model.model_path)
 
 
 if __name__ == "__main__":
