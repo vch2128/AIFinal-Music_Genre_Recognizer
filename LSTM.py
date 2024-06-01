@@ -2,6 +2,7 @@ import torch
 from torch import nn
 from torch.autograd import Variable as V
 import torch.optim as optim
+import torch.nn.functional as F
 import os
 import matplotlib.pyplot as plt
 from DataProcessing import MusicData
@@ -10,12 +11,13 @@ from DataProcessing import MusicData
 class LSTM(nn.Module):
     model_path = "./lstm_model.pth"
 
-    def __init__(self, input_dim, hidden_dim, layer_num, batch_size, output_dim):
+    def __init__(self, input_dim, hidden_dim, layer_num, batch_size, output_dim, dropout):
         super(LSTM, self).__init__()
         self.input_dim = input_dim
         self.hidden_dim = hidden_dim
         self.layer_num = layer_num
         self.batch_size = batch_size 
+        self.dropout = nn.Dropout(dropout)
 
 	    # initialize LSTM       
         self.lstm = nn.LSTM(input_dim, hidden_dim, layer_num)
@@ -41,12 +43,14 @@ def accuracy(outputs, Y, batch_size):
 def main():
     music_data = MusicData()
 
-    # file_exist = ( os.path.exists(music_data.train_X_file) and
-    #                os.path.exists(music_data.train_Y_file) and
-    #                os.path.exists(music_data.dev_X_file) and
-    #                os.path.exists(music_data.dev_Y_file)       )
-
-    music_data.load_feature_data()
+    file_exist = ( os.path.exists(music_data.train_X_file) and
+                   os.path.exists(music_data.train_Y_file) and
+                   os.path.exists(music_data.dev_X_file) and
+                   os.path.exists(music_data.dev_Y_file)       )
+    if file_exist:
+        music_data.load_feature_data()
+    else:
+        music_data.create_feature_data()
     
     # print(music_data.train_X.shape)    # (audioSample, timeSlots, features)
     # print(music_data.train_Y.shape)
@@ -56,17 +60,18 @@ def main():
     dev_X = torch.from_numpy(music_data.dev_X).type(torch.Tensor)
     dev_Y = torch.from_numpy(music_data.dev_Y).type(torch.Tensor)
 
-    batch_size = 25
+    batch_size = 20
     input_dim = 33     # the calculated features
     hidden_dim = 128     # capture hidden features
     layer_num = 2
     output_dim = 12    # 12 genres
-    epochs = 50
-    learning_rate = 0.001
+    dropout = 0.4
+    epochs = 150
+    learning_rate = 0.005
     val_gap = 10   # do validation after how many epochs
 
     print("Starting LSTM model...")
-    model = LSTM(input_dim, hidden_dim, layer_num, batch_size, output_dim)
+    model = LSTM(input_dim, hidden_dim, layer_num, batch_size, output_dim, dropout)
     lossfunc = nn.CrossEntropyLoss()
     optimizer = optim.Adam(model.parameters(), lr=learning_rate)
 
@@ -89,6 +94,7 @@ def main():
 
             # Forward pass
             outputs = model(batch_X)
+
             loss = lossfunc(outputs, batch_Y)
 
             # Backward and optimize

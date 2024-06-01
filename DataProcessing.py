@@ -97,27 +97,27 @@ class MusicData:
             one_hot_list[i][one_hot_code] = 1
         return one_hot_list
 
-    def load_feature_data(self):
+    def create_feature_data(self):
         # train
         print("Extracting training data features...")
         self.train_X, self.train_Y = self.extract_feature(self.train_pathlist)
-        # with open(self.train_X_file, "wb") as f:
-        #     np.save(f, self.train_X)
-        # with open(self.train_Y_file, "wb") as f:
-        #     np.save(f, self.train_Y)
+        with open(self.train_X_file, "wb") as f:
+            np.save(f, self.train_X)
+        with open(self.train_Y_file, "wb") as f:
+            np.save(f, self.train_Y)
         
         # dev
         print("Extracting validation data features...")
         self.dev_X, self.dev_Y = self.extract_feature(self.dev_pathlist)
-        # with open(self.dev_X_file, "wb") as f:
-        #     np.save(f, self.dev_X)
-        # with open(self.dev_Y_file, "wb") as f:
-        #     np.save(f, self.dev_Y)
+        with open(self.dev_X_file, "wb") as f:
+            np.save(f, self.dev_X)
+        with open(self.dev_Y_file, "wb") as f:
+            np.save(f, self.dev_Y)
 
-    # def load_feature_data(self):
-    #     print("Loading feature data files...")
-    #     self.train_X = np.load(self.train_X_file)
-    #     self.train_Y = np.load(self.train_Y_file)
-    #     self.dev_X = np.load(self.dev_X_file)
-    #     self.dev_Y = np.load(self.dev_Y_file)
+    def load_feature_data(self):
+        print("Data exist. Loading feature data files...")
+        self.train_X = np.load(self.train_X_file)
+        self.train_Y = np.load(self.train_Y_file)
+        self.dev_X = np.load(self.dev_X_file)
+        self.dev_Y = np.load(self.dev_Y_file)
 
