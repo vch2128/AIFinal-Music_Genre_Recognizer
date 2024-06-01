@@ -6,6 +6,7 @@ import os
 import shutil
 import torch
 from torch import nn
+from tqdm import tqdm
 from DataProcessing import MusicData
 from LSTM import LSTM
 
@@ -71,11 +72,11 @@ if __name__ == "__main__":
 
     genre_dict = {genre_name: [] for genre_name in MusicData().genre_list}
     
+    print("Sorting...")
     for song in os.listdir(input_folder):
         if song.endswith('.mp3') or song.endswith('.wav'):
             song_path = os.path.join(input_folder, song)
             prediction = predict(model, song_path)
-            print(prediction)
             target_folder = os.path.join(input_folder, prediction)
             shutil.move(song_path, target_folder)
             genre_dict[prediction].append(song[:-4])  # 去掉.mp3
