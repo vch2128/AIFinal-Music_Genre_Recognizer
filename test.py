@@ -6,7 +6,6 @@ import os
 import shutil
 import torch
 from torch import nn
-from tqdm import tqdm
 from DataProcessing import MusicData
 from LSTM import LSTM
 
