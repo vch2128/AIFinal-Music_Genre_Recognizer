@@ -8,7 +8,7 @@ from DataProcessing import MusicData
 
 
 class LSTM(nn.Module):
-    model_path = "./model/lstm_model.pth"
+    model_path = "./lstm_model.pth"
 
     def __init__(self, input_dim, hidden_dim, layer_num, batch_size, output_dim):
         super(LSTM, self).__init__()
@@ -41,19 +41,15 @@ def accuracy(outputs, Y, batch_size):
 def main():
     music_data = MusicData()
 
-    file_exist = ( os.path.exists(music_data.train_X_file) and
-                   os.path.exists(music_data.train_Y_file) and
-                   os.path.exists(music_data.dev_X_file) and
-                   os.path.exists(music_data.dev_Y_file)       )
+    # file_exist = ( os.path.exists(music_data.train_X_file) and
+    #                os.path.exists(music_data.train_Y_file) and
+    #                os.path.exists(music_data.dev_X_file) and
+    #                os.path.exists(music_data.dev_Y_file)       )
 
-    if file_exist:
-        music_data.load_feature_data()
-    else:
-        music_data.create_feature_data()
-
+    music_data.load_feature_data()
+    
     # print(music_data.train_X.shape)    # (audioSample, timeSlots, features)
     # print(music_data.train_Y.shape)
-    # print(music_data.train_X[1])
 
     train_X = torch.from_numpy(music_data.train_X).type(torch.Tensor)
     train_Y = torch.from_numpy(music_data.train_Y).type(torch.Tensor)
