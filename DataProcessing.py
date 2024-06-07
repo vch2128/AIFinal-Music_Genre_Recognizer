@@ -53,7 +53,7 @@ class MusicData:
         return path_list
 
     def extract_feature(self, path_list):
-        partition_num = 10
+        partition_num = 5
         partition_len = int(self.timeseries_length / partition_num)
         data = np.zeros( (len(path_list)*partition_num, partition_len, 33), dtype=np.float64 )
         genre_list = []

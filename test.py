@@ -15,7 +15,7 @@ partition_num = 10
 timeseries_length = 1200
 
 def load_model():
-    model = LSTM(input_dim=33, hidden_dim=128, batch_size=25, output_dim=12, layer_num=2)
+    model = LSTM(input_dim=33, hidden_dim=64, batch_size=15, output_dim=12, layer_num=2, dropout=0.5)
 
     if os.path.exists(model.model_path):
         print("Model available. Loading model...")
