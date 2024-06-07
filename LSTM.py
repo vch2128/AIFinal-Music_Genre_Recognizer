@@ -21,6 +21,7 @@ class LSTM(nn.Module):
 
 	    # initialize LSTM       
         self.lstm = nn.LSTM(input_dim, hidden_dim, layer_num)
+        self.batch_norm = nn.BatchNorm1d(hidden_dim)
         # output
         self.fc = nn.Linear(hidden_dim, output_dim)
 
@@ -62,12 +63,12 @@ def main():
 
     batch_size = 20
     input_dim = 33     # the calculated features
-    hidden_dim = 128     # capture hidden features
-    layer_num = 2
+    hidden_dim = 512     # capture hidden features
+    layer_num = 1
     output_dim = 12    # 12 genres
-    dropout = 0.4
-    epochs = 150
-    learning_rate = 0.005
+    dropout = 0.3
+    epochs = 400
+    learning_rate = 0.001
     val_gap = 10   # do validation after how many epochs
 
     print("Starting LSTM model...")
@@ -77,7 +78,7 @@ def main():
 
     loss_train, acc_train, loss_dev, acc_dev = [],[],[],[]
     epoch_train = [i for i in range(1, epochs+1)]
-    epoch_dev = [i for i in range(9, epochs+1, val_gap)]
+    epoch_dev = [i for i in range(10, epochs+1, val_gap)]
 
     print("Training...")
     num_batch = int(len(train_X) / batch_size)
