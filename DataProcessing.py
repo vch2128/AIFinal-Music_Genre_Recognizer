@@ -46,7 +46,7 @@ class MusicData:
     def music_path_list(dir):
         path_list = []
         for file in os.listdir(dir):
-            if file.endswith(".wav"):
+            if file.endswith(".wav") or file.endswith(".au"):
                 # print(file)
                 path = "%s/%s" % (dir, file)
                 path_list.append(path)

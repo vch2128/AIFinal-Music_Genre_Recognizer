@@ -63,11 +63,11 @@ def main():
 
     batch_size = 20
     input_dim = 33     # the calculated features
-    hidden_dim = 512     # capture hidden features
+    hidden_dim = 256     # capture hidden features
     layer_num = 1
     output_dim = 12    # 12 genres
     dropout = 0.3
-    epochs = 400
+    epochs = 100
     learning_rate = 0.001
     val_gap = 10   # do validation after how many epochs
 
@@ -78,7 +78,7 @@ def main():
 
     loss_train, acc_train, loss_dev, acc_dev = [],[],[],[]
     epoch_train = [i for i in range(1, epochs+1)]
-    epoch_dev = [i for i in range(10, epochs+1, val_gap)]
+    epoch_dev = [1] + [i for i in range(10, epochs+1, val_gap)]
 
     print("Training...")
     num_batch = int(len(train_X) / batch_size)
@@ -112,7 +112,7 @@ def main():
         print( "Epoch %d:  Loss: %.4f / Accuracy: %.2f%%" % (epoch, loss_avg, accuracy_avg) )
         
         # validation
-        if (epoch+1) % val_gap == 0:
+        if (epoch+1) % val_gap == 0 or epoch == 0:
             model.eval()
             val_runningloss = 0.0
             val_accuracy_sum = 0.0
