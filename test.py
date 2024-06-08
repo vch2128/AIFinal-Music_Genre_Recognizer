@@ -6,6 +6,7 @@ import os
 import shutil
 import torch
 from torch import nn
+from tqdm import tqdm
 from DataProcessing import MusicData
 from LSTM import LSTM
 
@@ -15,7 +16,7 @@ partition_num = 5
 timeseries_length = 1200
 
 def load_model():
-    model = LSTM(input_dim=33, hidden_dim=256, batch_size=5, output_dim=12, layer_num=1, dropout=0.3)
+    model = LSTM(input_dim=33, hidden_dim=256, batch_size=20, output_dim=9, layer_num=1, dropout=0.3)
 
     if os.path.exists(model.model_path):
         print("Model available. Loading model...")
@@ -66,21 +67,24 @@ if __name__ == "__main__":
     print("Please input the folder you want to organize: ")
     input_folder = input().strip()
     
-    for genre_name in MusicData().genre_list:
-        music_folder = os.path.join(input_folder, genre_name)
-        if not os.path.exists(music_folder):
-            os.makedirs(music_folder)
+    # for genre_name in MusicData().genre_list:
+    #     music_folder = os.path.join(input_folder, genre_name)
+    #     if not os.path.exists(music_folder):
+    #         os.makedirs(music_folder)
 
     genre_dict = {genre_name: [] for genre_name in MusicData().genre_list}
     
     print("Sorting...")
+    progress = tqdm(total = len(os.listdir(input_folder)))
     for song in os.listdir(input_folder):
         if song.endswith('.mp3') or song.endswith('.wav') or song.endswith('.au'):
             song_path = os.path.join(input_folder, song)
             prediction = predict(model, song_path)
-            target_folder = os.path.join(input_folder, prediction)
-            shutil.move(song_path, target_folder)
+            # target_folder = os.path.join(input_folder, prediction)
+            # shutil.move(song_path, target_folder)
             genre_dict[prediction].append(song[:-4])  # 去掉.mp3
+        progress.update(1)
+    progress.close()
 
     for genre, tracks in genre_dict.items():
         print(f"\n{genre}: ")

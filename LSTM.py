@@ -65,9 +65,9 @@ def main():
     input_dim = 33     # the calculated features
     hidden_dim = 256     # capture hidden features
     layer_num = 1
-    output_dim = 12    # 12 genres
+    output_dim = 9    # 9 genres
     dropout = 0.3
-    epochs = 100
+    epochs = 400
     learning_rate = 0.001
     val_gap = 10   # do validation after how many epochs
 

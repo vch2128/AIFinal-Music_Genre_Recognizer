@@ -11,14 +11,14 @@ class MusicData:
     genre_list = [
         "classical",
         "country",
-        "disco",
+        # "disco",
         "hiphop",
         "jazz",
         "rock",
         "blues",
         "reggae",
-        "EDM",
-        "Jpop",
+        # "EDM",
+        # "Jpop",
         "Kpop",
         "Cpop",
     ]
