@@ -19,9 +19,9 @@ This task is about music genre classification with LSTM. Here are the steps to i
 
     Run the following command to install the required packages:
   
-      ```
-          pip install -r requirements.txt
-      ```
+  ```
+      pip install -r requirements.txt
+  ```
 
  
 ## Usage
