@@ -23,13 +23,13 @@ class MusicData:
         "Cpop",
     ]
 
-    dir_trainfolder = "./Data/train"
-    dir_devfolder = "./Data/dev"
+    dir_trainfolder = "./dataset_r/train"
+    dir_devfolder = "./dataset_r/dev"
 
-    train_X_file = "./Data/train_X.npy"
-    train_Y_file = "./Data/train_Y.npy"
-    dev_X_file = "./Data/dev_X.npy"
-    dev_Y_file = "./Data/dev_Y.npy"
+    train_X_file = "./dataset_r/train_X_np.npy"
+    train_Y_file = "./dataset_r/train_Y_np.npy"
+    dev_X_file = "./dataset_r/dev_X_np.npy"
+    dev_Y_file = "./dataset_r/dev_Y_np.npy"
 
 
     def __init__(self):
