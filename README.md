@@ -64,7 +64,7 @@ This task is about music genre classification with LSTM. Here are the steps to i
 ## Experiment results
 - Best model
   
-  ![Accuracy of training and validation](https://github.com/vch2128/AIFinal-Music_Genre_Recognizer/blob/main/all128_2_acc.png)
+  ![Accuracy of training and validation](https://github.com/vch2128/AIFinal-Music_Genre_Recognizer/blob/main/all128_acc.png)
   ![Accuracy of test on each genre](https://github.com/vch2128/AIFinal-Music_Genre_Recognizer/blob/main/t_all128.png)
   
 - For more observations, please refer to the report.
