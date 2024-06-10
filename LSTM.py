@@ -9,7 +9,7 @@ from DataProcessing import MusicData
 
 
 class LSTM(nn.Module):
-    model_path = "./lstm_model.pth"
+    model_path = "./model/lstm_model_all128.pth"
 
     def __init__(self, input_dim, hidden_dim, layer_num, batch_size, output_dim, dropout):
         super(LSTM, self).__init__()
@@ -61,13 +61,13 @@ def main():
     dev_X = torch.from_numpy(music_data.dev_X).type(torch.Tensor)
     dev_Y = torch.from_numpy(music_data.dev_Y).type(torch.Tensor)
 
-    batch_size = 20
+    batch_size = 15
     input_dim = 33     # the calculated features
-    hidden_dim = 256     # capture hidden features
+    hidden_dim = 128     # capture hidden features
     layer_num = 1
     output_dim = 9    # 9 genres
-    dropout = 0.3
-    epochs = 400
+    dropout = 0.2
+    epochs = 200
     learning_rate = 0.001
     val_gap = 10   # do validation after how many epochs
 
@@ -135,34 +135,7 @@ def main():
             acc_dev.append(accuracy_avg)
             print("\nValidation: Loss: %.4f / Accuracy: %.2f%%\n" % (loss_avg, accuracy_avg))
 
-    # plot the loss and accuracy on both datasets
-    # # train
-    # plt.plot(epoch_train, loss_train)
-    # plt.xlabel("# of epochs")
-    # plt.ylabel("Loss")
-    # plt.title("Loss of Training Data")
-    # plt.show()
-
-    # plt.plot(epoch_train, acc_train)
-    # plt.xlabel("# of epochs")
-    # plt.ylabel("Accuracy(%)")
-    # plt.title("Accuracy of Training Data")
-    # plt.show()
-
-    # # dev
-    # plt.plot(epoch_dev, loss_dev)
-    # plt.xlabel("# of epochs")
-    # plt.ylabel("Loss")
-    # plt.title("Loss of Validation Data")
-    # plt.show()
-
-    # plt.plot(epoch_dev, acc_dev)
-    # plt.xlabel("# of epochs")
-    # plt.ylabel("Accuracy(%)")
-    # plt.title("Accuracy of Validation Data")
-    # plt.show()
-
-    # compare
+    # plot and compare the loss and accuracy on both datasets
     plt.plot(epoch_train, loss_train, label='Training')
     plt.plot(epoch_dev, loss_dev, label = 'Validation')
     plt.xlabel("# of epochs")
