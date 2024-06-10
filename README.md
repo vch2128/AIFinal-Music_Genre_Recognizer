@@ -9,6 +9,7 @@ This task is about music genre classification with LSTM. Here are the steps to i
 - Construct LSTM model and train it by `LSTM.py`
 - Process test data and predict their genre in `test.py`
 
+
 ## Prerequisites
 
 - Coding Environment
@@ -16,11 +17,12 @@ This task is about music genre classification with LSTM. Here are the steps to i
     - Python 3.11.9
 - Required packages
 
-Run the following command to install the required packages:
+    Run the following command to install the required packages:
   
-  ```
-  pip install -r requirements.txt
-  ```
+      ```
+      pip install -r requirements.txt
+      ```
+
  
 ## Usage
 - Download and install packages
@@ -45,9 +47,10 @@ Run the following command to install the required packages:
       ```
 - Input your test folder name
 
+
 ## Hyperparameters
 
-    ```
+```
     batch_size = 15
     input_dim = 33     # the calculated features
     hidden_dim = 128     # capture hidden features
@@ -56,10 +59,12 @@ Run the following command to install the required packages:
     dropout = 0.2
     epochs = 200
     learning_rate = 0.001
-    ```
+```
 
 ## Experiment results
 - Best model
+  
   ![Accuracy of training and validation](https://github.com/vch2128/AIFinal-Music_Genre_Recognizer/blob/main/all128_2_acc.png)
   ![Accuracy of test on each genre](https://github.com/vch2128/AIFinal-Music_Genre_Recognizer/blob/main/t_all128.png)
+  
 - For more observations, please refer to the report.
