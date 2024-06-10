@@ -15,6 +15,7 @@ This task is about music genre classification with LSTM. Here are the steps to i
     - OS: macOS Ventura 13.4
     - Python 3.11.9
 - Required packages
+
 Run the following command to install the required packages:
   
   ```
@@ -33,6 +34,7 @@ Run the following command to install the required packages:
     ```
     python test.py
     ```
+
 Expected output:
     ```
     Model available. Loading model...
