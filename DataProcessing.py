@@ -26,10 +26,10 @@ class MusicData:
     dir_trainfolder = "./dataset_r/train"
     dir_devfolder = "./dataset_r/dev"
 
-    train_X_file = "./dataset_r/train_X_np.npy"
-    train_Y_file = "./dataset_r/train_Y_np.npy"
-    dev_X_file = "./dataset_r/dev_X_np.npy"
-    dev_Y_file = "./dataset_r/dev_Y_np.npy"
+    train_X_file = "./dataset_r/train_X.npy"
+    train_Y_file = "./dataset_r/train_Y.npy"
+    dev_X_file = "./dataset_r/dev_X.npy"
+    dev_Y_file = "./dataset_r/dev_Y.npy"
 
 
     def __init__(self):
