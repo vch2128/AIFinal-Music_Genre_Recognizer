@@ -35,12 +35,13 @@ Run the following command to install the required packages:
     python test.py
     ```
 
-Expected output:
-    ```
+    Expected output:
+
+  ```
     Model available. Loading model...
     Model loading complete.
     Please input the folder you want to organize:
-    ```
+  ```
 - Input your test folder name
 
 ## Hyperparameters
