@@ -30,21 +30,23 @@ Run the following command to install the required packages:
     pip install -r requirements.txt
     ```
 - Create your test folder with audio samples (.au or .mp3 or .wav)
-- Run the model 
+- Run the model
+  
     ```
     python test.py
     ```
 
-    Expected output:
+    - Expected output:
 
-  ```
-    Model available. Loading model...
-    Model loading complete.
-    Please input the folder you want to organize:
-  ```
+      ```
+        Model available. Loading model...
+        Model loading complete.
+        Please input the folder you want to organize:
+      ```
 - Input your test folder name
 
 ## Hyperparameters
+
     ```
     batch_size = 15
     input_dim = 33     # the calculated features
@@ -57,4 +59,6 @@ Run the following command to install the required packages:
     ```
 
 ## Experiment results
+- Best model
+- 
 
