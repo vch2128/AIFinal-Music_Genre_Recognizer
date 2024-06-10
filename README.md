@@ -1,6 +1,6 @@
 # AIFinal-Music_Genre_Recognizer
 
-## overview
+## Overview
 This task is about music genre classification with LSTM. Here are the steps to implement it:
 
 - The data we used save in `music` folder is GTZAN dataset with some adjustments.
@@ -12,8 +12,8 @@ This task is about music genre classification with LSTM. Here are the steps to i
 - coding environment:
 - packages version: 
  
-## usage
+## Usage
 
-## hyperparameters
+## Hyperparameters
 
-## experiment results
+## Experiment results
